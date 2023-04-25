@@ -2,10 +2,6 @@ import PySimpleGUI as sg
 import json
 from cryptography.fernet import Fernet
 
-# Password dictionary
-with open("database.txt", "r") as db:
-    database = json.load(db)
-
 
 def create_window():
     # App layout
@@ -19,7 +15,6 @@ def create_window():
         [sg.Text("", key="-MESSAGE-")],
         [sg.Text("", key="-MESSAGE2-")]
     ]
-
     return sg.Window("Password storage", layout,
                      element_justification="center",
                      size=(400, 250))
@@ -42,7 +37,7 @@ def decrypt_password(key, encoded_password):
     return decoded_password
 
 
-def password_storage():
+def password_storage(database):
 
     window = create_window()
 
@@ -55,9 +50,11 @@ def password_storage():
             # Update database dictionary
             web = values["-WEB-"]
             pas = values["-PASS-"]
-            # Encrypt passwords
 
-            database.update({str(web): str(pas)})
+            # Encrypt passwords
+            key, encoded_password = encrypt_password(pas)
+            database.update({str(web): [key.decode(), encoded_password.decode()]})
+
             # Write dictionary to json
             with open("database.txt", "w") as db:
                 json.dump(database, db)
@@ -73,16 +70,33 @@ def password_storage():
             try:
                 res = dict(filter(lambda item: search_term in item[0], database.items()))
                 ls1 = list(res.keys())
-                for key, value in database.items():
-                    print(key, value)
                 window["-MESSAGE-"].update(ls1)
-                ls2 = list(res.values())
+                ls2 = []
+                for key, value in res.items():
+                    key = value[0].encode()
+                    encoded_password = value[1].encode()
+                    ls2.append(decrypt_password(key, encoded_password).decode())
                 window["-MESSAGE2-"].update(ls2)
             except KeyError:
                 window["-MESSAGE-"].update("Doesn't exist")
 
     window.close()
+    return database
+
+
+def main():
+
+    try:
+        with open("database.txt", "r") as db:
+            database = json.load(db)
+    except ValueError:
+        database = {}
+
+    database = password_storage(database)
+
+    with open("database.txt", "w") as db:
+        json.dump(database, db)
 
 
 if __name__ == "__main__":
-    password_storage()
+    main()
