@@ -1,3 +1,5 @@
+# Password Keeper app to encrypt and store passwords securely in one place
+
 import PySimpleGUI as sg
 import json
 from cryptography.fernet import Fernet
@@ -85,7 +87,7 @@ def password_storage(database):
 
 
 def main():
-
+    # Main function
     try:
         with open("database.txt", "r") as db:
             database = json.load(db)
