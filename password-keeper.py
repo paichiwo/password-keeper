@@ -60,6 +60,24 @@ def generate_password():
     return password
 
 
+def search_database(search_term, db_file_path):
+    """ Search for entries in the database file """
+
+    # Read the database
+    with open(db_file_path, "r") as db:
+        database = json.load(db)
+
+    # Display searched values
+    result = {key: value for key, value in database.items() if search_term in key}
+    list_1 = list(result.keys())
+    list_2 = []
+    for key, value in result.items():
+        key = value[0].encode()
+        encoded_password = value[1].encode()
+        list_2.append(decrypt_password(key, encoded_password).decode())
+    return list_1, list_2
+
+
 def password_storage(database):
 
     window = create_window()
@@ -87,27 +105,16 @@ def password_storage(database):
             # Write dictionary to json
             with open("database.txt", "w") as db:
                 json.dump(database, db)
-            print(database)
 
         if event == "-SEARCH-":
             search_term = values["-SEARCH-INPUT-"]
-            # Read json
-            with open("database.txt", "r") as db:
-                database = json.load(db)
-            # Display searched values
-            res = dict(filter(lambda item: search_term in item[0], database.items()))
-            ls1 = list(res.keys())
-            window["-MESSAGE1-"].update(ls1)
-            ls2 = []
-            for key, value in res.items():
-                key = value[0].encode()
-                encoded_password = value[1].encode()
-                ls2.append(decrypt_password(key, encoded_password).decode())
-            window["-MESSAGE2-"].update(ls2)
-            # If search term cannot be found
+            ls1, ls2 = search_database(search_term, "database.txt")
             if len(ls1) == 0 and len(ls2) == 0:
                 window["-MESSAGE1-"].update("Doesn't exist")
                 window["-MESSAGE2-"].update("")
+            else:
+                window["-MESSAGE1-"].update(ls1)
+                window["-MESSAGE2-"].update(ls2)
 
     window.close()
     return database
