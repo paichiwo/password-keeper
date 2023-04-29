@@ -14,7 +14,7 @@ from cryptography.fernet import Fernet
 
 
 def create_window():
-    """ Application layout and theme """
+    """Application layout and theme"""
 
     psg.theme("DarkTeal2")
 
@@ -35,11 +35,11 @@ def create_window():
     ]
     return psg.Window("password-keeper", layout, resizable=True,
                       element_justification="center",
-                      size=(600, 400))
+                      size=(450, 450))
 
 
 def encrypt_password(password):
-    """ Encrypt password entry """
+    """Encrypt password"""
 
     key = Fernet.generate_key()
     fernet = Fernet(key)
@@ -48,7 +48,7 @@ def encrypt_password(password):
 
 
 def decrypt_password(key, encoded_password):
-    """ Decrypt password entry """
+    """Decrypt password"""
 
     fernet = Fernet(key)
     decoded_password = fernet.decrypt(encoded_password)
@@ -56,7 +56,7 @@ def decrypt_password(key, encoded_password):
 
 
 def generate_password():
-    """ Generate passwords between 14 and 20 characters long using letters, numbers and symbols"""
+    """Generate passwords between 14 and 20 characters long using letters, numbers and symbols"""
 
     characters = string.ascii_lowercase + string.ascii_uppercase + string.digits + string.punctuation
     length = random.randrange(14, 21)
@@ -67,18 +67,19 @@ def generate_password():
 
 
 def add_password(web, pas, database, db_file_path):
-    """ Add password to the database """
+    """Add password to the database"""
+
     # Encrypt passwords
     key, encoded_password = encrypt_password(pas)
     database.update({str(web): [key.decode(), encoded_password.decode()]})
 
-    # Write dictionary as json
+    # Update the database file
     with open(db_file_path, "w") as db:
         json.dump(database, db)
 
 
 def search_database(search_term, db_file_path):
-    """ Search for entries in the database file """
+    """Search for entries in the database file"""
 
     # Read the database
     with open(db_file_path, "r") as db:
@@ -90,7 +91,7 @@ def search_database(search_term, db_file_path):
 
 
 def update_table(window, data):
-    """ Update table with search results """
+    """Update table with the search results"""
 
     table = window["-TABLE-"]
     table.update(visible=True)
@@ -99,15 +100,28 @@ def update_table(window, data):
 
 
 def delete_row(window, selected_row, database, db_file_path):
-    """ Delete selected row from the database """
+    """Delete selected row from the database."""
+
     key = selected_row[0]
     del database[next(islice(database, key, None))]
+
+    # Update the database file
     with open(db_file_path, "w") as db:
         json.dump(database, db)
 
 
 def password_keeper(database):
+    """
+    This function creates a PySimpleGUI window and listens for events to perform various actions
+    Parameters:   database (dict): a dictionary object representing the password database
 
+    - Generate a random password when the "Generate" button is clicked
+    - Add a new username and password to the database when the "Submit" button is clicked
+    - Search the database for passwords that match a search term when the "Search" button is clicked
+    - Delete the selected row from the database when the "Delete" button is clicked
+
+    Returns:   database (dict): the updated password database after the user closes the window
+    """
     window = create_window()
 
     while True:
@@ -115,21 +129,21 @@ def password_keeper(database):
         if event == psg.WIN_CLOSED:
             break
 
+        # Display generated password
         if event == "-GENERATE-":
-            # Display generated password
             password = generate_password()
             window["-PASSWORD-"].update(password)
 
+        # Add password to the database
         if event == "-SUBMIT-":
-            # Add password to the database
             username = values["-USERNAME-"]
             password = values["-PASSWORD-"]
             add_password(username, password, database, "database.txt")
             window["-USERNAME-"].update("")
             window["-PASSWORD-"].update("")
 
+        # Search for passwords
         if event == "-SEARCH-":
-            # Search for passwords
             search_term = values["-SEARCH-INPUT-"]
             data = search_database(search_term, "database.txt")
             if data:
@@ -138,8 +152,8 @@ def password_keeper(database):
             else:
                 window["-TABLE-"].update(visible=False)
 
+        # Delete the selected row from the database and update the table
         if event == "-DELETE-":
-            # Delete the selected row from the database and update the table
             selected_row = values["-TABLE-"]
             delete_row(window, selected_row, database, "database.txt")
             data = search_database(values["-SEARCH-INPUT-"], "database.txt")
@@ -153,7 +167,8 @@ def password_keeper(database):
 
 
 def main():
-    """ Application flow """
+    """Main function that loads the database, calls the password_keeper function,
+    and saves the updated database to a file."""
     try:
         with open("database.txt", "r") as db:
             database = json.load(db)
