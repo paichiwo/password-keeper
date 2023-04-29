@@ -1,4 +1,5 @@
 # PyCharm folders
 /.idea/
 /venv/
-
+# Database with passwords
+/database.txt
