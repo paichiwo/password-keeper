@@ -6,6 +6,8 @@ Password Keeper app to store encrypted passwords securely in one place
 
 import PySimpleGUI as psg
 import json
+import random
+import string
 from cryptography.fernet import Fernet
 
 
@@ -15,17 +17,18 @@ def create_window():
     psg.theme("DarkTeal2")
 
     layout = [
-        [psg.Input("website", key="-WEB-", size=40)],
-        [psg.Input("password", key="-PASS-", size=40)],
-        [psg.Button("Submit", key="-SUBMIT-")],
-        [psg.Input("", key="-SEARCH-INPUT-")],
+        [psg.Input("website", key="-WEB-")],
+        [psg.Input("password", key="-PASS-")],
+        [psg.Button("Generate", key="-GENERATE-"), psg.Button("Submit", key="-SUBMIT-")],
+        [psg.Input("search", key="-SEARCH-INPUT-")],
         [psg.Button("Search", key="-SEARCH-")],
         [psg.Text("", key="-MESSAGE-")],
         [psg.Text("", key="-MESSAGE2-")]
     ]
     return psg.Window("password-keeper", layout,
                       element_justification="center",
-                      size=(400, 250))
+                      size=(400, 250),
+                      resizable=True)
 
 
 def encrypt_password(password):
@@ -45,6 +48,17 @@ def decrypt_password(key, encoded_password):
     return decoded_password
 
 
+def generate_password():
+    """ Generate passwords between 14 and 20 characters long using letters, numbers and symbols"""
+
+    characters = string.ascii_lowercase + string.ascii_uppercase + string.digits + string.punctuation
+    length = random.randrange(14, 21)
+    password = ""
+    for character in range(length):
+        password += random.choice(characters)
+    return password
+
+
 def password_storage(database):
 
     window = create_window()
@@ -53,6 +67,11 @@ def password_storage(database):
         event, values = window.read()
         if event == psg.WIN_CLOSED:
             break
+
+        if event == "-GENERATE-":
+            # Display generated password
+            password = generate_password()
+            window["-PASS-"].update(password)
 
         if event == "-SUBMIT-":
             # Update database dictionary
