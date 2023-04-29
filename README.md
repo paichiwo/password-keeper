@@ -36,7 +36,7 @@ The user can also search for the password of a specific website by entering the 
 
 ## **Customization**
 
-Change theme: `psg.theme("name")` - [full list of themes]() 
+Change theme: `psg.theme("name")` - [Click here for full list of themes](https://media.geeksforgeeks.org/wp-content/uploads/20200511200254/f19.jpg) 
 
 Customize the layout and design of the application by modifying the app layout in the **password\_keeper.py** file.
 
