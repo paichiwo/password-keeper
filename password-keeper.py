@@ -18,8 +18,8 @@ def create_window():
     psg.theme("DarkTeal2")
 
     layout = [
-        [psg.Text("username / website")], [psg.Input("", key="-WEB-")],
-        [psg.Text("password")], [psg.Input("", key="-PASS-")],
+        [psg.Text("username / website")], [psg.Input("", key="-USERNAME-")],
+        [psg.Text("password")], [psg.Input("", key="-PASSWORD-")],
         [psg.Button("Generate", key="-GENERATE-"), psg.Button("Submit", key="-SUBMIT-")],
         [psg.Text("")],
         [psg.Input("", key="-SEARCH-INPUT-")],
@@ -101,15 +101,15 @@ def password_keeper(database):
         if event == "-GENERATE-":
             # Display generated password
             password = generate_password()
-            window["-PASS-"].update(password)
+            window["-PASSWORD-"].update(password)
 
         if event == "-SUBMIT-":
             # Add password to the database
-            web = values["-WEB-"]
-            pas = values["-PASS-"]
-            add_password(web, pas, database, "database.txt")
-            window["-WEB-"].update("")
-            window["-PASS-"].update("")
+            username = values["-USERNAME-"]
+            password = values["-PASSWORD-"]
+            add_password(username, password, database, "database.txt")
+            window["-USERNAME-"].update("")
+            window["-PASSWORD-"].update("")
 
         if event == "-SEARCH-":
             # Search for passwords
