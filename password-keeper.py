@@ -9,6 +9,7 @@ import PySimpleGUI as psg
 import json
 import random
 import string
+from itertools import islice
 from cryptography.fernet import Fernet
 
 
@@ -18,12 +19,12 @@ def create_window():
     psg.theme("DarkTeal2")
 
     layout = [
-        [psg.Text("username / website")], [psg.Input("", key="-USERNAME-")],
-        [psg.Text("password")], [psg.Input("", key="-PASSWORD-")],
-        [psg.Button("Generate", key="-GENERATE-"), psg.Button("Submit", key="-SUBMIT-")],
-        [psg.Text("")],
+        [psg.Text("username / website:")], [psg.Input("", key="-USERNAME-")],
+        [psg.Text("password:")], [psg.Input("", key="-PASSWORD-")],
+        [psg.Button("Generate", key="-GENERATE-", size=7), psg.Button("Submit", key="-SUBMIT-", size=7)],
+        [psg.Text("search:")],
         [psg.Input("", key="-SEARCH-INPUT-")],
-        [psg.Button("Search", key="-SEARCH-")],
+        [psg.Button("Search", key="-SEARCH-", size=7), psg.Button("Delete", key="-DELETE-", disabled=True, size=7)],
         [psg.Table(values=[], headings=["username / website", "password"],
                    key="-TABLE-", visible=False,
                    auto_size_columns=True,
@@ -93,8 +94,17 @@ def update_table(window, data):
 
     table = window["-TABLE-"]
     table.update(visible=True)
-    table_values = [[k, decrypt_password(v[0].encode(), v[1].encode()).decode()] for k, v in data.items()]
+    table_values = [[key, decrypt_password(value[0].encode(), value[1].encode()).decode()] for key, value in data.items()]
     table.update(values=table_values)
+
+
+def delete_row(window, selected_row, database, db_file_path):
+    """ Delete selected row from the database """
+    key = selected_row[0]
+    del database[next(islice(database, key, None))]
+    with open(db_file_path, "w") as db:
+        json.dump(database, db)
+
 
 def password_keeper(database):
 
@@ -122,6 +132,17 @@ def password_keeper(database):
             # Search for passwords
             search_term = values["-SEARCH-INPUT-"]
             data = search_database(search_term, "database.txt")
+            if data:
+                update_table(window, data)
+                window["-DELETE-"].update(disabled=False)
+            else:
+                window["-TABLE-"].update(visible=False)
+
+        if event == "-DELETE-":
+            # Delete the selected row from the database and update the table
+            selected_row = values["-TABLE-"]
+            delete_row(window, selected_row, database, "database.txt")
+            data = search_database(values["-SEARCH-INPUT-"], "database.txt")
             if data:
                 update_table(window, data)
             else:
