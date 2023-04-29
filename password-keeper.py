@@ -13,7 +13,7 @@ from cryptography.fernet import Fernet
 
 
 def create_window():
-    # App layout
+    """ Application layout and theme """
 
     psg.theme("DarkTeal2")
 
@@ -60,6 +60,17 @@ def generate_password():
     return password
 
 
+def add_password(web, pas, database, db_file_path):
+    """ Add password to the database """
+    # Encrypt passwords
+    key, encoded_password = encrypt_password(pas)
+    database.update({str(web): [key.decode(), encoded_password.decode()]})
+
+    # Write dictionary as json
+    with open(db_file_path, "w") as db:
+        json.dump(database, db)
+
+
 def search_database(search_term, db_file_path):
     """ Search for entries in the database file """
 
@@ -78,7 +89,7 @@ def search_database(search_term, db_file_path):
     return list_1, list_2
 
 
-def password_storage(database):
+def password_keeper(database):
 
     window = create_window()
 
@@ -93,20 +104,15 @@ def password_storage(database):
             window["-PASS-"].update(password)
 
         if event == "-SUBMIT-":
-            # Update database dictionary
+            # Add password to the database
             web = values["-WEB-"]
             pas = values["-PASS-"]
-            # Clear entry data
+            add_password(web, pas, database, "database.txt")
             window["-WEB-"].update("")
             window["-PASS-"].update("")
-            # Encrypt passwords
-            key, encoded_password = encrypt_password(pas)
-            database.update({str(web): [key.decode(), encoded_password.decode()]})
-            # Write dictionary to json
-            with open("database.txt", "w") as db:
-                json.dump(database, db)
 
         if event == "-SEARCH-":
+            # Search for passwords
             search_term = values["-SEARCH-INPUT-"]
             ls1, ls2 = search_database(search_term, "database.txt")
             if len(ls1) == 0 and len(ls2) == 0:
@@ -121,14 +127,14 @@ def password_storage(database):
 
 
 def main():
-    """ Main function """
+    """ Application flow """
     try:
         with open("database.txt", "r") as db:
             database = json.load(db)
     except (ValueError, FileNotFoundError):
         database = {}
 
-    database = password_storage(database)
+    database = password_keeper(database)
 
     with open("database.txt", "w") as db:
         json.dump(database, db)
