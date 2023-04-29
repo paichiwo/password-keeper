@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 """
-Password Keeper app to store encrypted passwords securely in one place
+The Password Keeper application creates powerful passwords,
+encodes them, and securely stores them all in one convenient location
 """
 
 import PySimpleGUI as psg
@@ -17,18 +18,18 @@ def create_window():
     psg.theme("DarkTeal2")
 
     layout = [
-        [psg.Input("website", key="-WEB-")],
-        [psg.Input("password", key="-PASS-")],
+        [psg.Text("username / website")], [psg.Input("", key="-WEB-")],
+        [psg.Text("password")], [psg.Input("", key="-PASS-")],
         [psg.Button("Generate", key="-GENERATE-"), psg.Button("Submit", key="-SUBMIT-")],
-        [psg.Input("search", key="-SEARCH-INPUT-")],
+        [psg.Text("")],
+        [psg.Input("", key="-SEARCH-INPUT-")],
         [psg.Button("Search", key="-SEARCH-")],
-        [psg.Text("", key="-MESSAGE-")],
+        [psg.Text("", key="-MESSAGE1-")],
         [psg.Text("", key="-MESSAGE2-")]
     ]
-    return psg.Window("password-keeper", layout,
+    return psg.Window("password-keeper", layout, resizable=True,
                       element_justification="center",
-                      size=(400, 250),
-                      resizable=True)
+                      size=(400, 280))
 
 
 def encrypt_password(password):
@@ -94,18 +95,19 @@ def password_storage(database):
             with open("database.txt", "r") as db:
                 database = json.load(db)
             # Display searched values
-            try:
-                res = dict(filter(lambda item: search_term in item[0], database.items()))
-                ls1 = list(res.keys())
-                window["-MESSAGE-"].update(ls1)
-                ls2 = []
-                for key, value in res.items():
-                    key = value[0].encode()
-                    encoded_password = value[1].encode()
-                    ls2.append(decrypt_password(key, encoded_password).decode())
-                window["-MESSAGE2-"].update(ls2)
-            except KeyError:
-                window["-MESSAGE-"].update("Doesn't exist")
+            res = dict(filter(lambda item: search_term in item[0], database.items()))
+            ls1 = list(res.keys())
+            window["-MESSAGE1-"].update(ls1)
+            ls2 = []
+            for key, value in res.items():
+                key = value[0].encode()
+                encoded_password = value[1].encode()
+                ls2.append(decrypt_password(key, encoded_password).decode())
+            window["-MESSAGE2-"].update(ls2)
+            # If search term cannot be found
+            if len(ls1) == 0 and len(ls2) == 0:
+                window["-MESSAGE1-"].update("Doesn't exist")
+                window["-MESSAGE2-"].update("")
 
     window.close()
     return database
