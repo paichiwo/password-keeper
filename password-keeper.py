@@ -24,12 +24,17 @@ def create_window():
         [psg.Text("")],
         [psg.Input("", key="-SEARCH-INPUT-")],
         [psg.Button("Search", key="-SEARCH-")],
-        [psg.Text("", key="-MESSAGE1-")],
-        [psg.Text("", key="-MESSAGE2-")]
+        [psg.Table(values=[], headings=["username / website", "password"],
+                   key="-TABLE-", visible=False,
+                   auto_size_columns=True,
+                   justification="left",
+                   selected_row_colors="black on grey",
+                   enable_events=True,
+                   expand_x=True, expand_y=True)]
     ]
     return psg.Window("password-keeper", layout, resizable=True,
                       element_justification="center",
-                      size=(400, 280))
+                      size=(600, 400))
 
 
 def encrypt_password(password):
@@ -80,14 +85,16 @@ def search_database(search_term, db_file_path):
 
     # Display searched values
     result = {key: value for key, value in database.items() if search_term in key}
-    list_1 = list(result.keys())
-    list_2 = []
-    for key, value in result.items():
-        key = value[0].encode()
-        encoded_password = value[1].encode()
-        list_2.append(decrypt_password(key, encoded_password).decode())
-    return list_1, list_2
+    return result
 
+
+def update_table(window, data):
+    """ Update table with search results """
+
+    table = window["-TABLE-"]
+    table.update(visible=True)
+    table_values = [[k, decrypt_password(v[0].encode(), v[1].encode()).decode()] for k, v in data.items()]
+    table.update(values=table_values)
 
 def password_keeper(database):
 
@@ -114,13 +121,11 @@ def password_keeper(database):
         if event == "-SEARCH-":
             # Search for passwords
             search_term = values["-SEARCH-INPUT-"]
-            ls1, ls2 = search_database(search_term, "database.txt")
-            if len(ls1) == 0 and len(ls2) == 0:
-                window["-MESSAGE1-"].update("Doesn't exist")
-                window["-MESSAGE2-"].update("")
+            data = search_database(search_term, "database.txt")
+            if data:
+                update_table(window, data)
             else:
-                window["-MESSAGE1-"].update(ls1)
-                window["-MESSAGE2-"].update(ls2)
+                window["-TABLE-"].update(visible=False)
 
     window.close()
     return database
