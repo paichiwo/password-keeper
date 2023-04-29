@@ -4,7 +4,7 @@
 Password Keeper app to store encrypted passwords securely in one place
 """
 
-import PySimpleGUI as sg
+import PySimpleGUI as psg
 import json
 from cryptography.fernet import Fernet
 
@@ -12,22 +12,24 @@ from cryptography.fernet import Fernet
 def create_window():
     # App layout
 
+    psg.theme("DarkTeal2")
+
     layout = [
-        [sg.Input("website", key="-WEB-")],
-        [sg.Input("password", key="-PASS-")],
-        [sg.Button("Submit", key="-SUBMIT-")],
-        [sg.Input("", key="-S-INPUT-")],
-        [sg.Button("Search", key="-SEARCH-")],
-        [sg.Text("", key="-MESSAGE-")],
-        [sg.Text("", key="-MESSAGE2-")]
+        [psg.Input("website", key="-WEB-", size=40)],
+        [psg.Input("password", key="-PASS-", size=40)],
+        [psg.Button("Submit", key="-SUBMIT-")],
+        [psg.Input("", key="-SEARCH-INPUT-")],
+        [psg.Button("Search", key="-SEARCH-")],
+        [psg.Text("", key="-MESSAGE-")],
+        [psg.Text("", key="-MESSAGE2-")]
     ]
-    return sg.Window("Password storage", layout,
-                     element_justification="center",
-                     size=(400, 250))
+    return psg.Window("password-keeper", layout,
+                      element_justification="center",
+                      size=(400, 250))
 
 
 def encrypt_password(password):
-    # Encrypt password entry
+    """ Encrypt password entry """
 
     key = Fernet.generate_key()
     fernet = Fernet(key)
@@ -36,7 +38,7 @@ def encrypt_password(password):
 
 
 def decrypt_password(key, encoded_password):
-    # Decrypt password entry
+    """ Decrypt password entry """
 
     fernet = Fernet(key)
     decoded_password = fernet.decrypt(encoded_password)
@@ -49,7 +51,7 @@ def password_storage(database):
 
     while True:
         event, values = window.read()
-        if event == sg.WIN_CLOSED:
+        if event == psg.WIN_CLOSED:
             break
 
         if event == "-SUBMIT-":
@@ -68,7 +70,7 @@ def password_storage(database):
             print(database)
 
         if event == "-SEARCH-":
-            search_term = values["-S-INPUT-"]
+            search_term = values["-SEARCH-INPUT-"]
             # Read json
             with open("database.txt", "r") as db:
                 database = json.load(db)
@@ -91,7 +93,7 @@ def password_storage(database):
 
 
 def main():
-    # Main function
+    """ Main function """
     try:
         with open("database.txt", "r") as db:
             database = json.load(db)
