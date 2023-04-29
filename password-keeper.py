@@ -1,4 +1,8 @@
-# Password Keeper app to encrypt and store passwords securely in one place
+#!/usr/bin/env python3
+
+"""
+Password Keeper app to store encrypted passwords securely in one place
+"""
 
 import PySimpleGUI as sg
 import json
@@ -52,11 +56,12 @@ def password_storage(database):
             # Update database dictionary
             web = values["-WEB-"]
             pas = values["-PASS-"]
-
+            # Clear entry data
+            window["-WEB-"].update("")
+            window["-PASS-"].update("")
             # Encrypt passwords
             key, encoded_password = encrypt_password(pas)
             database.update({str(web): [key.decode(), encoded_password.decode()]})
-
             # Write dictionary to json
             with open("database.txt", "w") as db:
                 json.dump(database, db)
@@ -67,7 +72,6 @@ def password_storage(database):
             # Read json
             with open("database.txt", "r") as db:
                 database = json.load(db)
-
             # Display searched values
             try:
                 res = dict(filter(lambda item: search_term in item[0], database.items()))
@@ -91,7 +95,7 @@ def main():
     try:
         with open("database.txt", "r") as db:
             database = json.load(db)
-    except ValueError:
+    except (ValueError, FileNotFoundError):
         database = {}
 
     database = password_storage(database)
