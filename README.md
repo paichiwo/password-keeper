@@ -34,6 +34,8 @@ The passwords are encrypted using the Fernet symmetric encryption algorithm prov
 
 The user can also search for the password of a specific website by entering the website name in the search bar and clicking the "Search" button.
 
+Users can delete password entries by selecting the entry from the table and clicking the "Delete" button. 
+
 ## **Customization**
 
 Change theme: `psg.theme("name")` - [Click here for full list of themes](https://media.geeksforgeeks.org/wp-content/uploads/20200511200254/f19.jpg) 
