@@ -21,7 +21,7 @@ These instructions will get you a copy of the project up and running on your loc
     **`$ git clone https://github.com/paichiwo/password-keeper.git`**  
     **`$ cd password-keeper`**
 2.  Run the app.  
-    **`$ python password\_keeper.py`**
+    **`$ python password-keeper.py`**
 
 ## **Usage**
 
