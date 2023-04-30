@@ -19,19 +19,21 @@ def create_window():
     psg.theme("DarkTeal2")
 
     layout = [
-        [psg.Text("username / website:")], [psg.Input("", key="-USERNAME-")],
-        [psg.Text("password:")], [psg.Input("", key="-PASSWORD-")],
+        [psg.Text("Username / Website:")], [psg.Input("", key="-USERNAME-")],
+        [psg.Text("Password:")], [psg.Input("", key="-PASSWORD-")],
         [psg.Button("Generate", key="-GENERATE-", size=7), psg.Button("Submit", key="-SUBMIT-", size=7)],
-        [psg.Text("search:")],
+        [psg.Text("Search:")],
         [psg.Input("", key="-SEARCH-INPUT-")],
         [psg.Button("Search", key="-SEARCH-", size=7), psg.Button("Delete", key="-DELETE-", disabled=True, size=7)],
-        [psg.Table(values=[], headings=["username / website", "password"],
-                   key="-TABLE-", visible=False,
+        [psg.Table(values=[], headings=["Username / Website", "Password"],
+                   key="-TABLE-",
                    auto_size_columns=True,
                    justification="left",
                    selected_row_colors="black on grey",
                    enable_events=True,
-                   expand_x=True, expand_y=True)]
+                   expand_x=True,
+                   expand_y=True
+                   )]
     ]
     return psg.Window("password-keeper", layout, resizable=True,
                       element_justification="center",
@@ -95,12 +97,14 @@ def update_table(window, data):
 
     table = window["-TABLE-"]
     table.update(visible=True)
-    table_values = [[key, decrypt_password(value[0].encode(), value[1].encode()).decode()] for key, value in data.items()]
+    table_values = [
+        [key, decrypt_password(value[0].encode(), value[1].encode()).decode()] for key, value in data.items()
+    ]
     table.update(values=table_values)
 
 
-def delete_row(window, selected_row, database, db_file_path):
-    """Delete selected row from the database."""
+def delete_row(selected_row, database, db_file_path):
+    """Delete selected row from the database"""
 
     key = selected_row[0]
     del database[next(islice(database, key, None))]
@@ -138,9 +142,12 @@ def password_keeper(database):
         if event == "-SUBMIT-":
             username = values["-USERNAME-"]
             password = values["-PASSWORD-"]
-            add_password(username, password, database, "database.txt")
-            window["-USERNAME-"].update("")
-            window["-PASSWORD-"].update("")
+            if not username or not password:
+                psg.popup("Please fill in the Username and Password fields.", title="Submit")
+            else:
+                add_password(username, password, database, "database.txt")
+                window["-USERNAME-"].update("")
+                window["-PASSWORD-"].update("")
 
         # Search for passwords
         if event == "-SEARCH-":
@@ -150,17 +157,15 @@ def password_keeper(database):
                 update_table(window, data)
                 window["-DELETE-"].update(disabled=False)
             else:
-                window["-TABLE-"].update(visible=False)
+                psg.popup("Search Error, item doesn't exist.", title="Search")
 
         # Delete the selected row from the database and update the table
         if event == "-DELETE-":
             selected_row = values["-TABLE-"]
-            delete_row(window, selected_row, database, "database.txt")
+            delete_row(selected_row, database, "database.txt")
             data = search_database(values["-SEARCH-INPUT-"], "database.txt")
             if data:
                 update_table(window, data)
-            else:
-                window["-TABLE-"].update(visible=False)
 
     window.close()
     return database
@@ -168,7 +173,7 @@ def password_keeper(database):
 
 def main():
     """Main function that loads the database, calls the password_keeper function,
-    and saves the updated database to a file."""
+    and saves the updated database to a file"""
     try:
         with open("database.txt", "r") as db:
             database = json.load(db)
