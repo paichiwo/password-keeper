@@ -1,5 +1,3 @@
-from tkinter import CENTER
-
 import customtkinter as ctk
 
 
