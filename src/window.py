@@ -43,3 +43,8 @@ class PasswordKeeper(ctk.CTk):
         self.user_pass = ctk.CTkEntry(self.frame, placeholder_text="Password")
         self.user_pass.grid(row=0, column=1, padx=20, pady=20, sticky='ew')
 
+        self.save_btn = ctk.CTkButton(self.frame, text="Save Account")
+        self.save_btn.grid(row=1, column=0, padx=20, sticky='ew')
+
+        self.generate_btn = ctk.CTkButton(self.frame, text="Generate")
+        self.generate_btn.grid(row=1, column=1, padx=20, sticky='ew')
