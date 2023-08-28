@@ -31,3 +31,15 @@ class PasswordKeeper(ctk.CTk):
 
         self.user_web = ctk.CTkEntry(self.frame_top, placeholder_text="Website")
         self.user_web.pack(padx=20, pady=20, fill='x')
+
+        self.frame = ctk.CTkFrame(self)
+        self.frame.pack(padx=20, pady=20, fill='both', expand=True, anchor='center')
+        self.frame.columnconfigure(0, weight=1)
+        self.frame.columnconfigure(1, weight=1)
+
+        self.user_name = ctk.CTkEntry(self.frame, placeholder_text="Username")
+        self.user_name.grid(row=0, column=0, padx=20, pady=20, sticky='ew')
+
+        self.user_pass = ctk.CTkEntry(self.frame, placeholder_text="Password")
+        self.user_pass.grid(row=0, column=1, padx=20, pady=20, sticky='ew')
+
