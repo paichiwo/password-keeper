@@ -145,14 +145,14 @@ def password_keeper(database):
             if not username or not password:
                 psg.popup("Please fill in the Username and Password fields.", title="Submit")
             else:
-                add_password(username, password, database, "database.txt")
+                add_password(username, password, database, "../data/database.txt")
                 window["-USERNAME-"].update("")
                 window["-PASSWORD-"].update("")
 
         # Search for passwords
         if event == "-SEARCH-":
             search_term = values["-SEARCH-INPUT-"]
-            data = search_database(search_term, "database.txt")
+            data = search_database(search_term, "../data/database.txt")
             if data:
                 update_table(window, data)
                 window["-DELETE-"].update(disabled=False)
@@ -162,8 +162,8 @@ def password_keeper(database):
         # Delete the selected row from the database and update the table
         if event == "-DELETE-":
             selected_row = values["-TABLE-"]
-            delete_row(selected_row, database, "database.txt")
-            data = search_database(values["-SEARCH-INPUT-"], "database.txt")
+            delete_row(selected_row, database, "../data/database.txt")
+            data = search_database(values["-SEARCH-INPUT-"], "../data/database.txt")
             if data:
                 update_table(window, data)
 
@@ -175,14 +175,14 @@ def main():
     """Main function that loads the database, calls the password_keeper function,
     and saves the updated database to a file"""
     try:
-        with open("database.txt", "r") as db:
+        with open("../data/database.txt", "r") as db:
             database = json.load(db)
     except (ValueError, FileNotFoundError):
         database = {}
 
     database = password_keeper(database)
 
-    with open("database.txt", "w") as db:
+    with open("../data/database.txt", "w") as db:
         json.dump(database, db)
 
 

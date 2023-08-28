@@ -63,4 +63,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## **Examples**
 
-![](screenshot.png)
+![](img/screenshot/screenshot.png)
