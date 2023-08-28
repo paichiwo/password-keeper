@@ -1,3 +1,5 @@
+from tkinter import CENTER
+
 import customtkinter as ctk
 
 
@@ -9,7 +11,13 @@ class PasswordKeeper(ctk.CTk):
         self.title("Password Keeper")
         self.geometry("450x450")
 
+        self.frame_top = None
+        self.user_web = None
+        self.frame = None
         self.user_name = None
+        self.user_pass = None
+        self.save_btn = None
+        self.generate_btn = None
 
         self.root_label = ctk.CTkLabel(self, text="LOGO")
         self.root_label.pack(padx=10, pady=10)
@@ -18,9 +26,8 @@ class PasswordKeeper(ctk.CTk):
 
     def password_keeper_frame(self):
 
-        self.frame = ctk.CTkFrame(self)
-        self.frame.pack(pady=20, padx=20, fill='both', expand=True)
+        self.frame_top = ctk.CTkFrame(self)
+        self.frame_top.pack(padx=20, fill='both', anchor='center')
 
-        self.user_name = ctk.CTkEntry(self.frame, placeholder_text="Username")
-        self.user_name.pack(padx=10, pady=20)
-
+        self.user_web = ctk.CTkEntry(self.frame_top, placeholder_text="Website")
+        self.user_web.pack(padx=20, pady=20, fill='x')
