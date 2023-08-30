@@ -31,7 +31,7 @@ class PasswordKeeper(ctk.CTkFrame):
     def password_keeper_frame(self):
 
         self.main_frame = ctk.CTkFrame(self, fg_color='transparent')
-        self.main_frame.pack(fill='both')
+        self.main_frame.pack(padx=20, pady=20, fill='both', expand=True)
 
         # --- SEARCH FRAME ---
         self.search_frame = ctk.CTkFrame(self.main_frame)
@@ -39,7 +39,7 @@ class PasswordKeeper(ctk.CTkFrame):
         self.search_frame.columnconfigure(0, weight=1)
         self.search_frame.rowconfigure(0, weight=1)
 
-        self.search_entry = ctk.CTkEntry(self.search_frame, placeholder_text="Search", border_width=1)
+        self.search_entry = ctk.CTkEntry(self.search_frame, placeholder_text="Search")
         self.search_entry.grid(row=0, column=0, padx=10, pady=10, sticky='ew')
 
         self.search_btn_img = ctk.CTkImage(Image.open("./img/search.png"))
@@ -48,18 +48,18 @@ class PasswordKeeper(ctk.CTkFrame):
 
         # --- INPUT FRAME ---
         self.user_frame = ctk.CTkFrame(self.main_frame)
-        self.user_frame.pack(padx=20, fill='both', expand=True, anchor='center')
+        self.user_frame.pack(padx=20, fill='both', anchor='center')
         self.user_frame.columnconfigure(0, weight=1)
         self.user_frame.columnconfigure(1, weight=1)
         self.user_frame.columnconfigure(2, weight=1)
 
-        self.user_web = ctk.CTkEntry(self.user_frame, placeholder_text="Website", border_width=1)
+        self.user_web = ctk.CTkEntry(self.user_frame, placeholder_text="Website")
         self.user_web.grid(row=0, column=0, padx=10, pady=10, sticky='ew')
 
-        self.user_name = ctk.CTkEntry(self.user_frame, placeholder_text="Username", border_width=1)
+        self.user_name = ctk.CTkEntry(self.user_frame, placeholder_text="Username")
         self.user_name.grid(row=0, column=1, padx=10, pady=10, sticky='ew')
 
-        self.user_pass = ctk.CTkEntry(self.user_frame, placeholder_text="Password", border_width=1)
+        self.user_pass = ctk.CTkEntry(self.user_frame, placeholder_text="Password")
         self.user_pass.grid(row=0, column=2, padx=10, pady=10, sticky='ew')
 
         self.save_btn = ctk.CTkButton(self.user_frame, text="Save Account")
@@ -70,11 +70,11 @@ class PasswordKeeper(ctk.CTkFrame):
 
         # TABLE FRAME
         self.table_frame = ctk.CTkScrollableFrame(self.main_frame)
-        self.table_frame.pack(padx=20, pady=20, fill='both')
+        self.table_frame.pack(padx=20, pady=20, fill='both', expand=True)
 
         headers = [["WEBSITE", "USERNAME", "PASSWORD"]]
 
-        self.table = CTkTable(master=self.table_frame, corner_radius=7, row=10, values=headers, header_color=("#8f8f8f", "#1f1f1f"))
+        self.table = CTkTable(master=self.table_frame, corner_radius=7, row=1, values=headers, header_color=("#8f8f8f", "#1f1f1f"))
         self.table.pack(fill="both", padx=2, pady=3)
 
     def generate(self):
@@ -89,6 +89,3 @@ class PasswordKeeper(ctk.CTkFrame):
 
         for i, account in enumerate(accounts):
             self.table.add_row(account, i + 1)
-
-
-

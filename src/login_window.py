@@ -35,7 +35,7 @@ class LoginApp(ctk.CTk):
         if self.frame:
             self.frame.destroy()
 
-        self.frame = ctk.CTkFrame(master=self)
+        self.frame = ctk.CTkFrame(master=self, fg_color='transparent')
         self.frame.pack(pady=20, padx=20, fill='both', expand=True)
 
         self.frame_label = ctk.CTkLabel(master=self.frame, text='Login')
@@ -64,7 +64,7 @@ class LoginApp(ctk.CTk):
         if self.frame:
             self.frame.destroy()
 
-        self.frame = ctk.CTkFrame(master=self)
+        self.frame = ctk.CTkFrame(master=self, fg_color='transparent')
         self.frame.pack(pady=20, padx=20, fill='both', expand=True)
 
         self.frame_label = ctk.CTkLabel(master=self.frame, text='Sign up')
@@ -97,7 +97,7 @@ class LoginApp(ctk.CTk):
             if Database().validate_user(email, password):
                 self.frame.destroy()
                 self.frame = PasswordKeeper(self, fg_color='transparent')
-                self.frame.pack(fill='both')
+                self.frame.pack(fill='both', expand=True)
 
             else:
                 self.msg_label.configure(text="Wrong credentials")
