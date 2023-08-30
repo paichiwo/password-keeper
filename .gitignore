@@ -3,3 +3,4 @@
 /venv/
 # Database with passwords
 /data/database.txt
+/db/db.db
