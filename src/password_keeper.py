@@ -1,6 +1,7 @@
 from CTkTable import *
 import customtkinter as ctk
 from PIL import Image
+from src.database import Database
 
 
 class PasswordKeeper(ctk.CTkFrame):
@@ -62,7 +63,7 @@ class PasswordKeeper(ctk.CTkFrame):
         self.user_pass = ctk.CTkEntry(self.user_frame, placeholder_text="Password")
         self.user_pass.grid(row=0, column=2, padx=10, pady=10, sticky='ew')
 
-        self.save_btn = ctk.CTkButton(self.user_frame, text="Save Account")
+        self.save_btn = ctk.CTkButton(self.user_frame, text="Save Account", command=self.save_account)
         self.save_btn.grid(row=1, column=0, padx=10, pady=10, sticky='ew')
 
         self.generate_btn = ctk.CTkButton(self.user_frame, text="Generate", command=self.generate)
@@ -76,6 +77,16 @@ class PasswordKeeper(ctk.CTkFrame):
 
         self.table = CTkTable(master=self.table_frame, corner_radius=7, row=1, values=headers, header_color=("#8f8f8f", "#1f1f1f"))
         self.table.pack(fill="both", padx=2, pady=3)
+
+    def save_account(self):
+        """Save user account to the database"""
+
+        website = self.user_web.get()
+        username = self.user_name.get()
+        password = self.user_pass.get()
+
+        Database().save_user_data(website, username, password)
+        print(f"data for {website} saved")
 
     def generate(self):
         """Populate table and create as many rows as entries to display"""
