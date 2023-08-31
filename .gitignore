@@ -4,3 +4,4 @@
 # Database with passwords
 /data/database.txt
 /db/db.db
+/data/session_data
