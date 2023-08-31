@@ -25,7 +25,7 @@ class LoginApp(ctk.CTk):
         self.signup_button = None
         self.cancel_button = None
 
-        self.root_label = ctk.CTkLabel(self, text="Password Keeper", font=("Any", 26, "bold"))
+        self.root_label = ctk.CTkLabel(self, text="PASSWORD KEEPER", font=("Any", 26, "bold"))
         self.root_label.pack(pady=20)
 
         self.login_frame()
@@ -38,7 +38,7 @@ class LoginApp(ctk.CTk):
         self.frame = ctk.CTkFrame(master=self, fg_color='transparent')
         self.frame.pack(pady=20, padx=20, fill='both', expand=True)
 
-        self.frame_label = ctk.CTkLabel(master=self.frame, text='Login')
+        self.frame_label = ctk.CTkLabel(master=self.frame, text='Use existing account or create one to get access', text_color='grey')
         self.frame_label.pack(pady=12, padx=10)
 
         self.user_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Email", width=200)
@@ -67,7 +67,7 @@ class LoginApp(ctk.CTk):
         self.frame = ctk.CTkFrame(master=self, fg_color='transparent')
         self.frame.pack(pady=20, padx=20, fill='both', expand=True)
 
-        self.frame_label = ctk.CTkLabel(master=self.frame, text='Sign up')
+        self.frame_label = ctk.CTkLabel(master=self.frame, text='Create your account', text_color='grey')
         self.frame_label.pack(pady=12, padx=10)
 
         self.user_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Email", width=200)
@@ -82,7 +82,7 @@ class LoginApp(ctk.CTk):
         self.signup_button = ctk.CTkButton(master=self.frame, text='Create Account', width=200, command=self.add_user)
         self.signup_button.pack(pady=12, padx=10)
 
-        self.msg_label = ctk.CTkLabel(self.frame, text="Enter email and password", text_color="grey")
+        self.msg_label = ctk.CTkLabel(self.frame, text="", text_color="grey")
         self.msg_label.pack(pady=12, padx=10)
 
         self.cancel_button = ctk.CTkButton(master=self.frame, text='Go Back', width=200, command=self.go_back)
@@ -119,18 +119,21 @@ class LoginApp(ctk.CTk):
 
         if password == password_confirmation:
             if is_valid_email(email):
-                if len(password) >= 6:
-                    if is_valid_password(password):
-                        try:
-                            Database().create_user(email, password)
-                        except sqlite3.Error as error:
-                            self.msg_label.configure(text=f"SQLite Error: {error}")
-                        self.msg_label.configure(text="SUCCESS !\nGo back to log in")
+                if not Database().user_exists(email):
+                    if len(password) >= 6:
+                        if is_valid_password(password):
+                            try:
+                                Database().create_user(email, password)
+                            except sqlite3.Error as error:
+                                self.msg_label.configure(text=f"SQLite Error: {error}")
+                            self.msg_label.configure(text="SUCCESS !\nGo back to log in")
+                        else:
+                            specials = "! @ # $ & - _"
+                            self.msg_label.configure(text=f"Allowed characters:\nuppercase, lowercase, digits, {specials}")
                     else:
-                        specials = "! @ # $ & - _"
-                        self.msg_label.configure(text=f"Allowed characters:\nuppercase, lowercase, digits, {specials}")
+                        self.msg_label.configure(text="Password must be minimum 6 characters")
                 else:
-                    self.msg_label.configure(text="Password must be minimum 6 characters")
+                    self.msg_label.configure(text="Account exists!\nGo back to log in")
             else:
                 self.msg_label.configure(text="Please enter valid email address")
         else:
