@@ -44,15 +44,13 @@ class Database:
         self.cursor.execute(select_query, (email, password))
         login_data = self.cursor.fetchone()
         if login_data:
-            return True
+            user_id = login_data[0]
+            return user_id
         else:
             return False
 
-    # will need to get user_id from user_session
-    def save_user_data(self, website, username, password):
+    def save_user_data(self, user_id, website, username, password):
         """Save user data to the user_data table in the database"""
-        user_id = 1
-        print(user_id)
         insert_query = "INSERT INTO user_data (user_id, website, username, password) VALUES (?, ?, ?, ?);"
         self.cursor.execute(insert_query, (user_id, website, username, password))
         self.conn.commit()
