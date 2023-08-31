@@ -1,3 +1,4 @@
+import shelve
 from CTkTable import *
 import customtkinter as ctk
 from PIL import Image
@@ -85,8 +86,12 @@ class PasswordKeeper(ctk.CTkFrame):
         username = self.user_name.get()
         password = self.user_pass.get()
 
-        Database().save_user_data(website, username, password)
+        shelf = shelve.open('data/session_data')
+        user_id = shelf['user_id']
+
+        Database().save_user_data(user_id, website, username, password)
         print(f"data for {website} saved")
+        shelf.close()
 
     def generate(self):
         """Populate table and create as many rows as entries to display"""
