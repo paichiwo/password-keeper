@@ -36,4 +36,3 @@ def load_user_session():
     """Load user session id"""
     with open('./data/session_data', 'r') as file:
         return file.read()
-
