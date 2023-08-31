@@ -1,17 +1,13 @@
-import shelve
 from CTkTable import *
 import customtkinter as ctk
 from PIL import Image
 from src.database import Database
+from src.helpers import load_user_session
 
 
 class PasswordKeeper(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        # self.iconbitmap("./img/icon_512x512.ico")
-        # self.title("Password Keeper")
-        # self.geometry("550x450")
 
         self.main_frame = None
 
@@ -33,7 +29,7 @@ class PasswordKeeper(ctk.CTkFrame):
     def password_keeper_frame(self):
 
         self.main_frame = ctk.CTkFrame(self, fg_color='transparent')
-        self.main_frame.pack(padx=20, pady=20, fill='both', expand=True)
+        self.main_frame.pack(fill='both', expand=True)
 
         # --- SEARCH FRAME ---
         self.search_frame = ctk.CTkFrame(self.main_frame)
@@ -81,17 +77,13 @@ class PasswordKeeper(ctk.CTkFrame):
 
     def save_account(self):
         """Save user account to the database"""
-
         website = self.user_web.get()
         username = self.user_name.get()
         password = self.user_pass.get()
-
-        shelf = shelve.open('data/session_data')
-        user_id = shelf['user_id']
+        user_id = load_user_session()
 
         Database().save_user_data(user_id, website, username, password)
-        print(f"data for {website} saved")
-        shelf.close()
+        print(f"data for website: [{website}] saved")
 
     def generate(self):
         """Populate table and create as many rows as entries to display"""
