@@ -31,6 +31,13 @@ class Database:
         except sqlite3.Error as e:
             print(e)
 
+    def user_exists(self, email):
+        """Check if user exists in the database"""
+        check_query = "SELECT COUNT(*) FROM user_profile WHERE email = ?;"
+        self.cursor.execute(check_query, (email,))
+        existing_account_count = self.cursor.fetchone()[0]
+        return existing_account_count > 0
+
     def create_user(self, email, password):
         """Save user data to database"""
         insert_query = "INSERT INTO user_profile (email, password) VALUES (?, ?);"
