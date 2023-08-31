@@ -1,7 +1,6 @@
 import os
 import sqlite3
 import sys
-import uuid
 
 
 def resource_path(relative_path):
@@ -45,7 +44,7 @@ class Database:
         login_data = self.cursor.fetchone()
         if login_data:
             user_id = login_data[0]
-            return user_id
+            return str(user_id)
         else:
             return False
 
