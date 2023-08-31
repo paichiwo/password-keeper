@@ -8,4 +8,14 @@ CREATE TABLE user_profile (
   password TEXT NOT NULL
 );
 
+DROP TABLE IF EXISTS user_data;
+
+CREATE TABLE user_data (
+  user_id INTEGER NOT NULL,
+  website TEXT NOT NULL,
+  username TEXT NOT NULL,
+  password TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES user_profile(id)
+);
+
 COMMIT;
