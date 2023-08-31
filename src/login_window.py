@@ -53,7 +53,7 @@ class LoginApp(ctk.CTk):
         self.remember_me = ctk.CTkCheckBox(master=self.frame, text='Remember Me')
         self.remember_me.pack(pady=12, padx=10)
 
-        self.msg_label = ctk.CTkLabel(self.frame, text="")
+        self.msg_label = ctk.CTkLabel(self.frame, text="", text_color='grey')
         self.msg_label.pack(pady=12, padx=10)
 
         self.signup_button = ctk.CTkButton(master=self.frame, text='Sign Up', width=200, command=self.signup)
@@ -93,19 +93,18 @@ class LoginApp(ctk.CTk):
         email = self.user_entry.get()
         password = self.user_pass.get()
 
-        if is_valid_email(self.user_entry.get()):
+        if is_valid_email(email=self.user_entry.get()):
             user_id = Database().validate_user(email, password)
-            print(f"user id: {user_id}")
-            save_user_session(user_id)
             if user_id:
                 self.frame.destroy()
                 self.frame = PasswordKeeper(self, fg_color='transparent')
                 self.frame.pack(fill='both', expand=True)
-
+                print(f"user id: {user_id}")
+                save_user_session(user_id)
             else:
                 self.msg_label.configure(text="Wrong credentials")
         else:
-            self.msg_label.configure(text="Enter valid email address and password", text_color="grey")
+            self.msg_label.configure(text="Enter valid email address and password")
 
     def signup(self):
         """Show Sign Up frame"""
