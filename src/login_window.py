@@ -1,8 +1,7 @@
-import shelve
 import sqlite3
 import customtkinter as ctk
 from tkinter import BOTTOM
-from src.helpers import center_window, is_valid_email, is_valid_password
+from src.helpers import center_window, is_valid_email, is_valid_password, save_user_session
 from src.database import Database
 from src.password_keeper import PasswordKeeper
 
@@ -96,9 +95,8 @@ class LoginApp(ctk.CTk):
 
         if is_valid_email(self.user_entry.get()):
             user_id = Database().validate_user(email, password)
-            shelf = shelve.open('data/session_data')
-            shelf['user_id'] = user_id
-            shelf.close()
+            print(f"user id: {user_id}")
+            save_user_session(user_id)
             if user_id:
                 self.frame.destroy()
                 self.frame = PasswordKeeper(self, fg_color='transparent')
