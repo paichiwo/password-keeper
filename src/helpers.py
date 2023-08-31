@@ -24,3 +24,16 @@ def is_valid_password(password):
         if letter not in password_pattern:
             return False
     return True
+
+
+def save_user_session(user_id):
+    """Save user_id as user session number"""
+    with open('./data/session_data', 'w') as file:
+        file.write(user_id)
+
+
+def load_user_session():
+    """Load user session id"""
+    with open('./data/session_data', 'r') as file:
+        return file.read()
+
