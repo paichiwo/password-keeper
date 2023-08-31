@@ -96,7 +96,7 @@ class LoginApp(ctk.CTk):
 
         if is_valid_email(self.user_entry.get()):
             user_id = Database().validate_user(email, password)
-            shelf = shelve.open('session_data')
+            shelf = shelve.open('data/session_data')
             shelf['user_id'] = user_id
             shelf.close()
             if user_id:
