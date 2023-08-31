@@ -1,6 +1,7 @@
 import os
 import sqlite3
 import sys
+import uuid
 
 
 def resource_path(relative_path):
@@ -41,11 +42,20 @@ class Database:
         """Validate user credentials"""
         select_query = "SELECT * FROM user_profile WHERE email = ? AND password = ?;"
         self.cursor.execute(select_query, (email, password))
-        user_data = self.cursor.fetchone()
-        if user_data:
+        login_data = self.cursor.fetchone()
+        if login_data:
             return True
         else:
             return False
+
+    # will need to get user_id from user_session
+    def save_user_data(self, website, username, password):
+        """Save user data to the user_data table in the database"""
+        user_id = 1
+        print(user_id)
+        insert_query = "INSERT INTO user_data (user_id, website, username, password) VALUES (?, ?, ?, ?);"
+        self.cursor.execute(insert_query, (user_id, website, username, password))
+        self.conn.commit()
 
     def close_db(self):
         """Close the database connection"""
