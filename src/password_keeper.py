@@ -1,4 +1,4 @@
-from CTkTable import *
+from CTkTable import CTkTable
 import customtkinter as ctk
 from PIL import Image
 from src.database import Database
