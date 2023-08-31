@@ -117,28 +117,34 @@ class LoginApp(ctk.CTk):
         password = self.user_pass.get()
         password_confirmation = self.confirm_user_pass.get()
 
-        if password == password_confirmation:
-            if is_valid_email(email):
-                if not Database().user_exists(email):
-                    if len(password) >= 6:
-                        if is_valid_password(password):
-                            try:
-                                Database().create_user(email, password)
-                            except sqlite3.Error as error:
-                                self.msg_label.configure(text=f"SQLite Error: {error}")
-                            self.msg_label.configure(text="SUCCESS !\nGo back to log in")
-                        else:
-                            specials = "! @ # $ & - _"
-                            self.msg_label.configure(text=f"Allowed characters:\nuppercase, lowercase, digits, {specials}")
-                    else:
-                        self.msg_label.configure(text="Password must be minimum 6 characters")
-                else:
-                    self.msg_label.configure(text="Account exists!\nGo back to log in")
-            else:
-                self.msg_label.configure(text="Please enter valid email address")
-        else:
+        if password != password_confirmation:
             self.msg_label.configure(text="Passwords don't match")
+            return
+
+        if not is_valid_email(email):
+            self.msg_label.configure(text="Please enter a valid email address")
+            return
+
+        if not Database().user_exists(email):
+            self.msg_label.configure(text="Account exists!\nGo back to log in")
+            return
+
+        if len(password) < 6:
+            self.msg_label.configure(text="Password must be a minimum of 6 characters")
+            return
+
+        if not is_valid_password(password):
+            specials = "! @ # $ & - _"
+            self.msg_label.configure(text=f"Allowed characters:\nuppercase, lowercase, digits, {specials}")
+            return
+
+        try:
+            Database().create_user(email, password)
+            self.msg_label.configure(text="SUCCESS !\nGo back to log in")
+        except sqlite3.Error as error:
+            self.msg_label.configure(text=f"SQLite Error: {error}")
 
     def go_back(self):
         """Show login frame"""
         self.login_frame()
+
