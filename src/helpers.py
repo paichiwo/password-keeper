@@ -39,11 +39,9 @@ def load_user_session():
         return file.read()
 
 
-def generate_password():
+def generate_password(password_length):
     """Generate passwords between 14 and 20 characters long using letters, numbers and symbols"""
-
-    allowed_characters = string.ascii_lowercase + string.ascii_uppercase + string.digits + "!@#$&-_"
-    password_length = random.randrange(14, 21)
+    allowed_characters = string.ascii_lowercase + string.ascii_uppercase + string.digits + "!@#$&-_.,{}%+"
     password = "".join(random.choices(allowed_characters, k=password_length))
     return password
 

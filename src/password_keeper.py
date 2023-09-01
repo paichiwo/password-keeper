@@ -22,8 +22,10 @@ class PasswordKeeper(ctk.CTkFrame):
         self.user_web = None
         self.user_name = None
         self.user_pass = None
-        self.save_btn = None
+        self.pass_length_label = None
+        self.slider = None
         self.generate_btn = None
+        self.save_btn = None
         self.table_frame = None
         self.table = None
 
@@ -63,11 +65,18 @@ class PasswordKeeper(ctk.CTkFrame):
         self.user_pass = ctk.CTkEntry(self.user_frame, placeholder_text="Password")
         self.user_pass.grid(row=0, column=2, padx=10, pady=10, sticky='ew')
 
-        self.save_btn = ctk.CTkButton(self.user_frame, text="Save Account", command=self.save_account)
-        self.save_btn.grid(row=1, column=0, padx=10, pady=10, sticky='ew')
+        self.pass_length_label = ctk.CTkLabel(self.user_frame, text="6 characters", text_color='grey')
+        self.pass_length_label.grid(row=1, column=1)
+
+        self.slider = ctk.CTkSlider(self.user_frame, from_=6, to=20, width=150, command=self.show_pass_length)
+        self.slider.set(6)
+        self.slider.grid(row=2, column=1, padx=10)
 
         self.generate_btn = ctk.CTkButton(self.user_frame, text="Generate", command=self.generate)
-        self.generate_btn.grid(row=1, column=2, padx=10, sticky='ew')
+        self.generate_btn.grid(row=2, column=2, padx=10, pady=10, sticky='ew')
+
+        self.save_btn = ctk.CTkButton(self.user_frame, text="Save Account", command=self.save_account)
+        self.save_btn.grid(row=2, column=0, padx=10, pady=10, sticky='ew')
 
         # --- TABLE FRAME ---
         self.table_frame = ctk.CTkScrollableFrame(self.main_frame)
@@ -102,6 +111,10 @@ class PasswordKeeper(ctk.CTkFrame):
 
     def generate(self):
         """Generate password between 14 and 20 characters long using letters, numbers and symbols"""
-        password = generate_password()
+        password = generate_password(int(self.slider.get()))
         self.user_pass.delete(0, END)
         self.user_pass.insert(0, password)
+
+    def show_pass_length(self, slider_value):
+        self.pass_length_label.configure(text=f"{int(slider_value)} characters")
+
