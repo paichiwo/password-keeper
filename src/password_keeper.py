@@ -1,13 +1,16 @@
-from CTkTable import CTkTable
 import customtkinter as ctk
+from tkinter import END
+from CTkTable import CTkTable
 from PIL import Image
 from src.database import Database
-from src.helpers import load_user_session
+from src.helpers import load_user_session, generate_password
 
 
 class PasswordKeeper(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.user_id = load_user_session()
 
         self.main_frame = None
 
@@ -41,7 +44,7 @@ class PasswordKeeper(ctk.CTkFrame):
         self.search_entry.grid(row=0, column=0, padx=10, pady=10, sticky='ew')
 
         self.search_btn_img = ctk.CTkImage(Image.open("./img/search.png"))
-        self.search_btn = ctk.CTkButton(self.search_frame, image=self.search_btn_img, text="", fg_color='transparent', width=20)
+        self.search_btn = ctk.CTkButton(self.search_frame, image=self.search_btn_img, text="", fg_color='transparent', width=20, command=self.search)
         self.search_btn.grid(row=0, column=1, padx=10, sticky='ew')
 
         # --- INPUT FRAME ---
@@ -66,7 +69,7 @@ class PasswordKeeper(ctk.CTkFrame):
         self.generate_btn = ctk.CTkButton(self.user_frame, text="Generate", command=self.generate)
         self.generate_btn.grid(row=1, column=2, padx=10, sticky='ew')
 
-        # TABLE FRAME
+        # --- TABLE FRAME ---
         self.table_frame = ctk.CTkScrollableFrame(self.main_frame)
         self.table_frame.pack(padx=20, pady=20, fill='both', expand=True)
 
@@ -80,12 +83,11 @@ class PasswordKeeper(ctk.CTkFrame):
         website = self.user_web.get()
         username = self.user_name.get()
         password = self.user_pass.get()
-        user_id = load_user_session()
 
-        Database().save_user_data(user_id, website, username, password)
+        Database().save_user_data(self.user_id, website, username, password)
         print(f"data for website: [{website}] saved")
 
-    def generate(self):
+    def search(self):
         """Populate table and create as many rows as entries to display"""
         accounts = [
             ["example.com", "user123", "password123"],
@@ -97,3 +99,9 @@ class PasswordKeeper(ctk.CTkFrame):
 
         for i, account in enumerate(accounts):
             self.table.add_row(account, i + 1)
+
+    def generate(self):
+        """Generate password between 14 and 20 characters long using letters, numbers and symbols"""
+        password = generate_password()
+        self.user_pass.delete(0, END)
+        self.user_pass.insert(0, password)

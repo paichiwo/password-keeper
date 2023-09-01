@@ -1,5 +1,6 @@
 import re
 import string
+import random
 
 
 def center_window(window, width, height):
@@ -36,3 +37,13 @@ def load_user_session():
     """Load user session id"""
     with open('./data/session_data', 'r') as file:
         return file.read()
+
+
+def generate_password():
+    """Generate passwords between 14 and 20 characters long using letters, numbers and symbols"""
+
+    allowed_characters = string.ascii_lowercase + string.ascii_uppercase + string.digits + "!@#$&-_"
+    password_length = random.randrange(14, 21)
+    password = "".join(random.choices(allowed_characters, k=password_length))
+    return password
+
