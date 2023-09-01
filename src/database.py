@@ -61,6 +61,16 @@ class Database:
         self.cursor.execute(insert_query, (user_id, website, username, password))
         self.conn.commit()
 
+    def show_all(self, user_id):  # need to add a search query
+        """Search database for user query using user session"""
+        check_query = "SELECT * FROM user_data WHERE user_id = ?;"
+        self.cursor.execute(check_query, (user_id,))
+        result = self.cursor.fetchall()
+        new_list = [list(entry[2:]) for entry in result]
+        return new_list
+
+
+
     def close_db(self):
         """Close the database connection"""
         self.conn.close()

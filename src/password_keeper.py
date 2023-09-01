@@ -98,16 +98,12 @@ class PasswordKeeper(ctk.CTkFrame):
 
     def search(self):
         """Populate table and create as many rows as entries to display"""
-        accounts = [
-            ["example.com", "user123", "password123"],
-            ["google.com", "admin@google.com", "xDeR5j-X"],
-            ["amazon.co.uk", "prince", "royal_flush$$$"],
-            ["test.net", "test_user1", "Long_password123"],
-            ["test.net", "test_user2", "short_pass"]
-        ]
-
-        for i, account in enumerate(accounts):
-            self.table.add_row(account, i + 1)
+        search_query = self.search_entry.get()
+        if not search_query:
+            accounts = Database().show_all(self.user_id)
+            for i, account in enumerate(accounts):
+                self.table.add_row(account, i + 1)
+        # needs an else statement with a search query
 
     def generate(self):
         """Generate password between 14 and 20 characters long using letters, numbers and symbols"""
@@ -117,4 +113,3 @@ class PasswordKeeper(ctk.CTkFrame):
 
     def show_pass_length(self, slider_value):
         self.pass_length_label.configure(text=f"{int(slider_value)} characters")
-
