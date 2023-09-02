@@ -11,8 +11,6 @@ class PasswordKeeper(ctk.CTkFrame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.user_id = load_user_session()
-
         self.main_frame = None
 
         self.search_frame = None
@@ -92,28 +90,32 @@ class PasswordKeeper(ctk.CTkFrame):
         self.table_frame.pack(padx=20, pady=20, fill='both', expand=True)
 
         headers = [["WEBSITE", "USERNAME", "PASSWORD"]]
-
         self.table = CTkTable(master=self.table_frame, corner_radius=7, row=1, values=headers, header_color=("#8f8f8f", "#1f1f1f"))
         self.table.pack(fill="both", padx=2, pady=3)
 
     def save_account(self):
         """Save user account to the database"""
+
+        # get required data
+        user_id = load_user_session()
         website = self.user_web.get()
         username = self.user_name.get()
         password = self.user_pass.get()
 
-        Database().save_user_data(self.user_id, website, username, password)
-        print(f"data for website: [{website}] saved")
+        # save database
+        Database().save_user_data(user_id, website, username, password)
+        print(f"data for website: [{website}] saved, user_id used: [{user_id}]")
 
     def search(self):
         """Populate the table and create as many rows as entries to display"""
 
         # get the results for search
+        user_id = load_user_session()
         search_query = self.search_entry.get()
         if not search_query:
-            results = Database().show_all(self.user_id)
+            results = Database().show_all(user_id)
         else:
-            results = Database().search(self.user_id, search_query)
+            results = Database().search(user_id, search_query)
 
         # clear the existing table
         if len(self.table.get()) > 1:
