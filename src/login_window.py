@@ -126,7 +126,7 @@ class LoginApp(ctk.CTk):
             self.msg_label.configure(text="Please enter a valid email address")
             return
 
-        if not Database().user_exists(email):
+        if Database().user_exists(email):
             self.msg_label.configure(text="Account exists!\nGo back to log in")
             return
 
