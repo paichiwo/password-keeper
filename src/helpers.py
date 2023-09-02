@@ -49,6 +49,7 @@ def generate_password(password_length):
 
 def password_strength(password):
     """Return password strength in float; anything above 0.5 is a good password, over 0.8 perfect password"""
-    stats = ps(password)
-    pass_strength = round(stats.strength(), 3)
-    return pass_strength
+    if password:
+        stats = ps(password)
+        pass_strength = round(stats.strength(), 3)
+        return pass_strength
