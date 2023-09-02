@@ -31,7 +31,7 @@ class PasswordKeeper(ctk.CTkFrame):
         self.table_frame = None
         self.table = None
 
-        self.string_var = tk.StringVar()
+        self.pass_info_var = tk.StringVar()
         self.pass_length_var = tk.StringVar()
 
         self.password_keeper_frame()
@@ -81,7 +81,7 @@ class PasswordKeeper(ctk.CTkFrame):
         self.generate_btn = ctk.CTkButton(self.user_frame, text="Generate", command=self.generate)
         self.generate_btn.grid(row=1, column=2, padx=10, pady=10, sticky='ew')
 
-        self.pass_info_label = ctk.CTkLabel(self.user_frame, text="test", textvariable=self.string_var)
+        self.pass_info_label = ctk.CTkLabel(self.user_frame, text="test", textvariable=self.pass_info_var)
         self.pass_info_label.grid(row=2, column=0, padx=10, columnspan=2)
 
         self.save_btn = ctk.CTkButton(self.user_frame, text="Save Account", command=self.save_account)
@@ -107,31 +107,44 @@ class PasswordKeeper(ctk.CTkFrame):
 
     def search(self):
         """Populate the table and create as many rows as entries to display"""
+
+        # get the results for search
         search_query = self.search_entry.get()
+        if not search_query:
+            results = Database().show_all(self.user_id)
+        else:
+            results = Database().search(self.user_id, search_query)
+
+        # clear the existing table
         if len(self.table.get()) > 1:
             for n in range(1, len(self.table.get())):
                 self.table.delete_row(n)
-        if not search_query:
-            accounts = Database().show_all(self.user_id)
-        else:
-            accounts = Database().search(self.user_id, search_query)
-        for i, account in enumerate(accounts):
+
+        # update the table
+        for i, account in enumerate(results):
             self.table.add_row(account, i + 1)
 
     def generate(self):
-        """Generate password between 14 and 20 characters long using letters, numbers and symbols"""
+        """Generate password between 14 and 20 characters long using letters,
+        numbers and symbols, show password length and password info"""
+
+        # generate password and update user_pass entry
         password = generate_password(int(self.slider.get()))
         self.user_pass.delete(0, END)
         self.user_pass.insert(0, password)
+
+        # update password length and password info
         pass_strength = password_strength(password)
-        self.string_var.set(pass_strength)
+        self.pass_info_var.set(f"Password strength: {pass_strength}")
         self.pass_length_var.set(f"{str(len(password))} characters")
 
     def show_pass_length(self, slider_value):
+        """Show pass length according to slider"""
         self.pass_length_var.set(f"{int(slider_value)} characters")
 
     def update_string_var(self, event):
+        """Update tk string variables"""
         password = self.user_pass.get()
         pass_strength = password_strength(password)
-        self.string_var.set(pass_strength)
+        self.pass_info_var.set(f"Password strength: {pass_strength}")
         self.pass_length_var.set(f"{str(len(password))} characters")
