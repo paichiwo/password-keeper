@@ -32,6 +32,7 @@ class PasswordKeeper(ctk.CTkFrame):
         self.table = None
 
         self.string_var = tk.StringVar()
+        self.pass_length_var = tk.StringVar()
 
         self.password_keeper_frame()
 
@@ -74,7 +75,7 @@ class PasswordKeeper(ctk.CTkFrame):
         self.slider.set(6)
         self.slider.grid(row=1, column=0, padx=10)
 
-        self.pass_length_label = ctk.CTkLabel(self.user_frame, text="6 characters", text_color='grey')
+        self.pass_length_label = ctk.CTkLabel(self.user_frame, text="6 characters",  textvariable=self.pass_length_var, text_color='grey')
         self.pass_length_label.grid(row=1, column=1)
 
         self.generate_btn = ctk.CTkButton(self.user_frame, text="Generate", command=self.generate)
@@ -124,11 +125,13 @@ class PasswordKeeper(ctk.CTkFrame):
         self.user_pass.insert(0, password)
         pass_strength = password_strength(password)
         self.string_var.set(pass_strength)
+        self.pass_length_var.set(f"{str(len(password))} characters")
 
     def show_pass_length(self, slider_value):
-        self.pass_length_label.configure(text=f"{int(slider_value)} characters")
+        self.pass_length_var.set(f"{int(slider_value)} characters")
 
     def update_string_var(self, event):
         password = self.user_pass.get()
         pass_strength = password_strength(password)
         self.string_var.set(pass_strength)
+        self.pass_length_var.set(f"{str(len(password))} characters")
