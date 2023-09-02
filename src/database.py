@@ -69,7 +69,14 @@ class Database:
         new_list = [list(entry[2:]) for entry in result]
         return new_list
 
-
+    def search(self, user_id, search_query):
+        """Search database for user query using user session"""
+        check_query = "SELECT * FROM user_data WHERE user_id = ? AND (website LIKE ? OR username LIKE ? OR password LIKE ?);"
+        search_query = f"%{search_query}%"  # Add % before and after the search_query
+        self.cursor.execute(check_query, (user_id, search_query, search_query, search_query))
+        result = self.cursor.fetchall()
+        new_list = [list(entry[2:]) for entry in result]
+        return new_list
 
     def close_db(self):
         """Close the database connection"""
