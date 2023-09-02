@@ -1,6 +1,7 @@
 import re
 import string
 import random
+from password_strength import PasswordStats as ps
 
 
 def center_window(window, width, height):
@@ -45,3 +46,9 @@ def generate_password(password_length):
     password = "".join(random.choices(allowed_characters, k=password_length))
     return password
 
+
+def password_strength(password):
+    """Return password strength in float; anything above 0.5 is a good password, over 0.8 perfect password"""
+    stats = ps(password)
+    pass_strength = round(stats.strength(), 3)
+    return pass_strength
