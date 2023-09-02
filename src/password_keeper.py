@@ -22,9 +22,10 @@ class PasswordKeeper(ctk.CTkFrame):
         self.user_web = None
         self.user_name = None
         self.user_pass = None
-        self.pass_length_label = None
         self.slider = None
+        self.pass_length_label = None
         self.generate_btn = None
+        self.pass_info_label = None
         self.save_btn = None
         self.table_frame = None
         self.table = None
@@ -65,18 +66,21 @@ class PasswordKeeper(ctk.CTkFrame):
         self.user_pass = ctk.CTkEntry(self.user_frame, placeholder_text="Password")
         self.user_pass.grid(row=0, column=2, padx=10, pady=10, sticky='ew')
 
+        self.slider = ctk.CTkSlider(self.user_frame, from_=6, to=20, width=150, command=self.show_pass_length)
+        self.slider.set(6)
+        self.slider.grid(row=1, column=0, padx=10)
+
         self.pass_length_label = ctk.CTkLabel(self.user_frame, text="6 characters", text_color='grey')
         self.pass_length_label.grid(row=1, column=1)
 
-        self.slider = ctk.CTkSlider(self.user_frame, from_=6, to=20, width=150, command=self.show_pass_length)
-        self.slider.set(6)
-        self.slider.grid(row=2, column=1, padx=10)
-
         self.generate_btn = ctk.CTkButton(self.user_frame, text="Generate", command=self.generate)
-        self.generate_btn.grid(row=2, column=2, padx=10, pady=10, sticky='ew')
+        self.generate_btn.grid(row=1, column=2, padx=10, pady=10, sticky='ew')
+
+        self.pass_info_label = ctk.CTkLabel(self.user_frame, text="test")
+        self.pass_info_label.grid(row=2, column=0, padx=10, columnspan=2)
 
         self.save_btn = ctk.CTkButton(self.user_frame, text="Save Account", command=self.save_account)
-        self.save_btn.grid(row=2, column=0, padx=10, pady=10, sticky='ew')
+        self.save_btn.grid(row=2, column=2, padx=10, pady=10, sticky='ew')
 
         # --- TABLE FRAME ---
         self.table_frame = ctk.CTkScrollableFrame(self.main_frame)
@@ -97,13 +101,17 @@ class PasswordKeeper(ctk.CTkFrame):
         print(f"data for website: [{website}] saved")
 
     def search(self):
-        """Populate table and create as many rows as entries to display"""
+        """Populate the table and create as many rows as entries to display"""
         search_query = self.search_entry.get()
+        if len(self.table.get()) > 1:
+            for n in range(1, len(self.table.get())):
+                self.table.delete_row(n)
         if not search_query:
             accounts = Database().show_all(self.user_id)
-            for i, account in enumerate(accounts):
-                self.table.add_row(account, i + 1)
-        # needs an else statement with a search query
+        else:
+            accounts = Database().search(self.user_id, search_query)
+        for i, account in enumerate(accounts):
+            self.table.add_row(account, i + 1)
 
     def generate(self):
         """Generate password between 14 and 20 characters long using letters, numbers and symbols"""
