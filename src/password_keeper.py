@@ -1,9 +1,10 @@
 import customtkinter as ctk
 from tkinter import END
+import tkinter as tk
 from CTkTable import CTkTable
 from PIL import Image
 from src.database import Database
-from src.helpers import load_user_session, generate_password
+from src.helpers import load_user_session, generate_password, password_strength
 
 
 class PasswordKeeper(ctk.CTkFrame):
@@ -29,6 +30,8 @@ class PasswordKeeper(ctk.CTkFrame):
         self.save_btn = None
         self.table_frame = None
         self.table = None
+
+        self.string_var = tk.StringVar()
 
         self.password_keeper_frame()
 
@@ -65,6 +68,7 @@ class PasswordKeeper(ctk.CTkFrame):
 
         self.user_pass = ctk.CTkEntry(self.user_frame, placeholder_text="Password")
         self.user_pass.grid(row=0, column=2, padx=10, pady=10, sticky='ew')
+        self.user_pass.bind("<KeyRelease>", self.update_string_var)
 
         self.slider = ctk.CTkSlider(self.user_frame, from_=6, to=20, width=150, command=self.show_pass_length)
         self.slider.set(6)
@@ -76,7 +80,7 @@ class PasswordKeeper(ctk.CTkFrame):
         self.generate_btn = ctk.CTkButton(self.user_frame, text="Generate", command=self.generate)
         self.generate_btn.grid(row=1, column=2, padx=10, pady=10, sticky='ew')
 
-        self.pass_info_label = ctk.CTkLabel(self.user_frame, text="test")
+        self.pass_info_label = ctk.CTkLabel(self.user_frame, text="test", textvariable=self.string_var)
         self.pass_info_label.grid(row=2, column=0, padx=10, columnspan=2)
 
         self.save_btn = ctk.CTkButton(self.user_frame, text="Save Account", command=self.save_account)
@@ -118,6 +122,13 @@ class PasswordKeeper(ctk.CTkFrame):
         password = generate_password(int(self.slider.get()))
         self.user_pass.delete(0, END)
         self.user_pass.insert(0, password)
+        pass_strength = password_strength(password)
+        self.string_var.set(pass_strength)
 
     def show_pass_length(self, slider_value):
         self.pass_length_label.configure(text=f"{int(slider_value)} characters")
+
+    def update_string_var(self, event):
+        password = self.user_pass.get()
+        pass_strength = password_strength(password)
+        self.string_var.set(pass_strength)
