@@ -1,6 +1,7 @@
 import sqlite3
 import customtkinter as ctk
 from tkinter import BOTTOM
+from PIL import Image
 from src.helpers import center_window, is_valid_email, is_valid_password, save_user_session
 from src.database import Database
 from src.password_keeper import PasswordKeeper
@@ -25,7 +26,8 @@ class LoginApp(ctk.CTk):
         self.signup_button = None
         self.cancel_button = None
 
-        self.root_label = ctk.CTkLabel(self, text="PASSWORD KEEPER", font=("Any", 26, "bold"))
+        self.root_label_img = ctk.CTkImage(Image.open("./img/password_keeper_logo_345x30.png"), size=(345, 30))
+        self.root_label = ctk.CTkLabel(self, image=self.root_label_img, text="", fg_color='transparent')
         self.root_label.pack(pady=20)
 
         self.login_frame()
@@ -38,7 +40,7 @@ class LoginApp(ctk.CTk):
         self.frame = ctk.CTkFrame(master=self, fg_color='transparent')
         self.frame.pack(pady=20, padx=20, fill='both', expand=True)
 
-        self.frame_label = ctk.CTkLabel(master=self.frame, text='Use existing account or create one to get access', text_color='grey')
+        self.frame_label = ctk.CTkLabel(master=self.frame, text="Use existing account or create one to get access", text_color='grey')
         self.frame_label.pack(pady=12, padx=10)
 
         self.user_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Email", width=200)
