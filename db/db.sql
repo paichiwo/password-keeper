@@ -11,6 +11,7 @@ CREATE TABLE user_profile (
 DROP TABLE IF EXISTS user_data;
 
 CREATE TABLE user_data (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL,
   website TEXT NOT NULL,
   username TEXT NOT NULL,
