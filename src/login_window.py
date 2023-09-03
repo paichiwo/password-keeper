@@ -1,10 +1,10 @@
 import sqlite3
 import customtkinter as ctk
-from tkinter import BOTTOM
 from PIL import Image
-from src.helpers import center_window, is_valid_email, is_valid_password, save_user_session
+from tkinter import BOTTOM
 from src.database import Database
 from src.password_keeper import PasswordKeeper
+from src.helpers import center_window, is_valid_email, is_valid_password, save_user_session
 
 
 class LoginApp(ctk.CTk):
@@ -40,7 +40,7 @@ class LoginApp(ctk.CTk):
         self.frame = ctk.CTkFrame(master=self, fg_color='transparent')
         self.frame.pack(pady=20, padx=20, fill='both', expand=True)
 
-        self.frame_label = ctk.CTkLabel(master=self.frame, text="Use existing account or create one to get access", text_color='grey')
+        self.frame_label = ctk.CTkLabel(master=self.frame, text="Use your existing account or create one to get access", text_color='grey')
         self.frame_label.pack(pady=12, padx=10)
 
         self.user_entry = ctk.CTkEntry(master=self.frame, placeholder_text="Email", width=200)
@@ -101,7 +101,6 @@ class LoginApp(ctk.CTk):
                 self.frame.destroy()
                 self.frame = PasswordKeeper(self, fg_color='transparent')
                 self.frame.pack(fill='both', expand=True)
-                print(f"user id: {user_id}")
                 save_user_session(user_id)
             else:
                 self.msg_label.configure(text="Wrong credentials")
