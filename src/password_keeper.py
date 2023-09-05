@@ -150,3 +150,4 @@ class PasswordKeeper(ctk.CTkFrame):
         pass_strength = password_strength(password)
         self.pass_info_var.set(f"Password strength: {pass_strength}")
         self.pass_length_var.set(f"{str(len(password))} characters")
+        print(event)
