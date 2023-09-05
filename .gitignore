@@ -2,6 +2,6 @@
 /.idea/
 /venv/
 # Database with passwords
-/data/database.txt
+/data/old_database.txt
 /db/db.db
 /data/session_data
