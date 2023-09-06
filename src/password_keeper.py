@@ -149,7 +149,7 @@ class PasswordKeeper(ctk.CTkFrame):
         """Show pass length according to slider"""
         self.pass_length_var.set(f"{int(slider_value)} characters")
 
-    def update_string_var(self):
+    def update_string_var(self, event):
         """Update tk string variables"""
         password = self.user_pass.get()
         pass_strength = password_strength(password)
