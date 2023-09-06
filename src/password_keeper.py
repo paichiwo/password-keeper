@@ -49,7 +49,8 @@ class PasswordKeeper(ctk.CTkFrame):
         self.search_entry.grid(row=0, column=0, padx=10, pady=10, sticky='ew')
 
         self.search_btn_img = ctk.CTkImage(Image.open("./img/search.png"))
-        self.search_btn = ctk.CTkButton(self.search_frame, image=self.search_btn_img, text="", fg_color='transparent', width=20, command=self.search)
+        self.search_btn = ctk.CTkButton(self.search_frame, image=self.search_btn_img, text="", fg_color='transparent',
+                                        width=20, command=self.search)
         self.search_btn.grid(row=0, column=1, padx=10, sticky='ew')
 
         # --- INPUT FRAME ---
@@ -73,7 +74,8 @@ class PasswordKeeper(ctk.CTkFrame):
         self.slider.set(6)
         self.slider.grid(row=1, column=0, padx=10)
 
-        self.pass_length_label = ctk.CTkLabel(self.user_frame, text="6 characters",  textvariable=self.pass_length_var, text_color='grey')
+        self.pass_length_label = ctk.CTkLabel(self.user_frame, text="6 characters",  textvariable=self.pass_length_var,
+                                              text_color='grey')
         self.pass_length_label.grid(row=1, column=1)
 
         self.generate_btn = ctk.CTkButton(self.user_frame, text="Generate", command=self.generate)
@@ -90,7 +92,8 @@ class PasswordKeeper(ctk.CTkFrame):
         self.table_frame.pack(padx=20, pady=20, fill='both', expand=True)
 
         headers = [["WEBSITE", "USERNAME", "PASSWORD"]]
-        self.table = CTkTable(master=self.table_frame, corner_radius=7, row=1, values=headers, header_color=("#8f8f8f", "#1f1f1f"))
+        self.table = CTkTable(master=self.table_frame, corner_radius=7, row=1, values=headers,
+                              header_color=("#8f8f8f", "#1f1f1f"))
         self.table.pack(fill="both", padx=2, pady=3)
 
     def save_account(self):
@@ -146,10 +149,10 @@ class PasswordKeeper(ctk.CTkFrame):
         """Show pass length according to slider"""
         self.pass_length_var.set(f"{int(slider_value)} characters")
 
-    def update_string_var(self, event):
+    def update_string_var(self):
         """Update tk string variables"""
         password = self.user_pass.get()
         pass_strength = password_strength(password)
 
-        self.pass_info_var.set(f"Password strength: {pass_strength}")
         self.pass_length_var.set(f"{str(len(password))} characters")
+        self.pass_info_var.set(f"Password strength: {pass_strength}")
