@@ -111,9 +111,12 @@ class LoginApp(ctk.CTk):
 
     def login(self):
         """Login button callback"""
+
+        # get user data
         email = self.user_entry.get()
         password = self.user_pass.get()
 
+        # if user data valid -> login
         if is_valid_email(email=self.user_entry.get()):
             user_id = Database().validate_user(email, password)
             if user_id:
@@ -132,10 +135,13 @@ class LoginApp(ctk.CTk):
 
     def add_user(self):
         """Add a user to the database"""
+
+        # get user data
         email = self.user_entry.get()
         password = self.user_pass.get()
         password_confirmation = self.confirm_user_pass.get()
 
+        # validate the user data
         if password != password_confirmation:
             self.msg_label.configure(text="Passwords don't match")
             return
@@ -157,6 +163,7 @@ class LoginApp(ctk.CTk):
             self.msg_label.configure(text=f"Allowed characters:\nuppercase, lowercase, digits, {specials}")
             return
 
+        # create user account
         try:
             Database().create_user(email, password)
             self.msg_label.configure(text="SUCCESS !\nGo back to log in")

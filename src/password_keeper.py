@@ -112,6 +112,8 @@ class PasswordKeeper(ctk.CTkFrame):
         # get the results for search
         user_id = load_user_session()
         search_query = self.search_entry.get()
+
+        # perform search in the database
         if not search_query:
             results = Database().show_all(user_id)
         else:
@@ -122,9 +124,9 @@ class PasswordKeeper(ctk.CTkFrame):
             for n in range(1, len(self.table.get())):
                 self.table.delete_row(n)
 
-        # update the table
-        for i, account in enumerate(results):
-            self.table.add_row(account, i + 1)
+        # update the table with search data
+        for i, entry in enumerate(results):
+            self.table.add_row(entry, i + 1)
 
     def generate(self):
         """Generate password between 14 and 20 characters long using letters,
@@ -148,6 +150,6 @@ class PasswordKeeper(ctk.CTkFrame):
         """Update tk string variables"""
         password = self.user_pass.get()
         pass_strength = password_strength(password)
+
         self.pass_info_var.set(f"Password strength: {pass_strength}")
         self.pass_length_var.set(f"{str(len(password))} characters")
-        print(event)
