@@ -6,3 +6,6 @@
 - if email but no password = msg
 3. Bind the 'enter' key to the search entry in the password keeper app
 4. Work on the color scheme
+5. make table selectable with right click menu (copy, delete)
+- best if multiple selection is supported
+6.
