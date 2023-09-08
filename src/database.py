@@ -23,13 +23,17 @@ class Database:
 
     def create_db(self):
         """Create a new database using an .sql file"""
-        with open(self.SQL_FILEPATH, "r", encoding='utf-8') as sql_file:
-            sql_commands = sql_file.read()
-        try:
-            self.cursor.executescript(sql_commands)
-            self.conn.commit()
-        except sqlite3.Error as e:
-            print(e)
+        if not os.path.exists(self.DB_FILEPATH):
+            with open(self.SQL_FILEPATH, "r", encoding='utf-8') as sql_file:
+                sql_commands = sql_file.read()
+            try:
+                self.cursor.executescript(sql_commands)
+                self.conn.commit()
+                print("Database created")
+            except sqlite3.Error as e:
+                print(e)
+        else:
+            print("Database exists, proceeding...")
 
     def user_exists(self, email):
         """Check if user exists in the database"""
@@ -72,7 +76,7 @@ class Database:
     def search(self, user_id, search_query):
         """Search database for user query using user session"""
         check_query = "SELECT * FROM user_data WHERE user_id = ? AND (website LIKE ? OR username LIKE ? OR password LIKE ?);"
-        search_query = f"%{search_query}%"  # Add % before and after the search_query
+        search_query = f"%{search_query}%"
         self.cursor.execute(check_query, (user_id, search_query, search_query, search_query))
         result = self.cursor.fetchall()
         new_list = [list(entry[2:]) for entry in result]

@@ -5,15 +5,8 @@ from src.login_window import LoginApp
 
 def main():
     """Initialize a database and create a login window"""
-    if not os.path.exists('./db/db.db'):
-        Database().create_db()
-        print("database created")
-    else:
-        print("database exists, proceeding...")
-
-    login_app = LoginApp()
-    login_app.mainloop()
-
+    Database().create_db()
+    LoginApp().mainloop()
     Database().close_db()
 
 
