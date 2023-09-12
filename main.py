@@ -1,4 +1,3 @@
-import os.path
 from src.database import Database
 from src.login_window import LoginApp
 
