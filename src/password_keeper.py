@@ -1,10 +1,11 @@
 import customtkinter as ctk
-from tkinter import END
 import tkinter as tk
+from tkinter import END
 from CTkTable import CTkTable
 from PIL import Image
+from src.user import User
 from src.database import Database
-from src.helpers import load_user_session, generate_password, password_strength
+from src.helper import Helper
 
 
 class PasswordKeeper(ctk.CTkFrame):
@@ -100,7 +101,7 @@ class PasswordKeeper(ctk.CTkFrame):
         """Save user account to the database"""
 
         # get required data
-        user_id = load_user_session()
+        user_id = User().load_user_session()
         website = self.user_web.get()
         username = self.user_name.get()
         password = self.user_pass.get()
@@ -113,7 +114,7 @@ class PasswordKeeper(ctk.CTkFrame):
         """Populate the table and create as many rows as entries to display"""
 
         # get the results for search
-        user_id = load_user_session()
+        user_id = User().load_user_session()
         search_query = self.search_entry.get()
 
         # perform search in the database
@@ -136,12 +137,12 @@ class PasswordKeeper(ctk.CTkFrame):
         numbers and symbols, show password length and password info"""
 
         # generate password and update user_pass entry
-        password = generate_password(int(self.slider.get()))
+        password = Helper().generate_password(int(self.slider.get()))
         self.user_pass.delete(0, END)
         self.user_pass.insert(0, password)
 
         # update password length and password info
-        pass_strength = password_strength(password)
+        pass_strength = Helper().password_strength(password)
         self.pass_info_var.set(f"Password strength: {pass_strength}")
         self.pass_length_var.set(f"{str(len(password))} characters")
 
@@ -152,7 +153,7 @@ class PasswordKeeper(ctk.CTkFrame):
     def update_string_var(self, event):
         """Update tk string variables"""
         password = self.user_pass.get()
-        pass_strength = password_strength(password)
+        pass_strength = Helper().password_strength(password)
 
         self.pass_length_var.set(f"{str(len(password))} characters")
         self.pass_info_var.set(f"Password strength: {pass_strength}")

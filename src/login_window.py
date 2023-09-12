@@ -1,10 +1,11 @@
-import sqlite3
 import customtkinter as ctk
-from PIL import Image
+import sqlite3
 from tkinter import BOTTOM
+from PIL import Image
+from src.user import User
+from src.helper import Helper
 from src.database import Database
 from src.password_keeper import PasswordKeeper
-from src.helpers import center_window, is_valid_email, is_valid_password, save_user_session
 
 
 class LoginApp(ctk.CTk):
@@ -14,7 +15,7 @@ class LoginApp(ctk.CTk):
         ctk.set_default_color_theme("./data/paichiwo_theme.json")
         self.title("Login Window")
         self.iconbitmap("./img/icon_512x512.ico")
-        center_window(self, 550, 500)
+        Helper().center_window(self, 550, 500)
 
         self.frame = None
         self.frame_label = None
@@ -117,13 +118,13 @@ class LoginApp(ctk.CTk):
         password = self.user_pass.get()
 
         # if user data valid -> login
-        if is_valid_email(email=self.user_entry.get()):
+        if Helper().is_valid_email(email=self.user_entry.get()):
             user_id = Database().validate_user(email, password)
             if user_id:
                 self.frame.destroy()
                 self.frame = PasswordKeeper(self, fg_color='transparent')
                 self.frame.pack(fill='both', expand=True)
-                save_user_session(user_id)
+                User().save_user_session(user_id)
             else:
                 self.msg_label.configure(text="Wrong credentials")
         else:
@@ -143,10 +144,10 @@ class LoginApp(ctk.CTk):
 
         # validate the user data
         if password != password_confirmation:
-            self.msg_label.configure(text="Passwords don't match")
+            self.msg_label.configure(text="Passwords do not match")
             return
 
-        if not is_valid_email(email):
+        if not Helper().is_valid_email(email):
             self.msg_label.configure(text="Please enter a valid email address")
             return
 
@@ -158,12 +159,12 @@ class LoginApp(ctk.CTk):
             self.msg_label.configure(text="Password must be a minimum of 6 characters")
             return
 
-        if not is_valid_password(password):
-            specials = "! @ # $ & - _"
+        if not Helper().is_valid_password(password):
+            specials = '!@#$&-_.,{}%+'
             self.msg_label.configure(text=f"Allowed characters:\nuppercase, lowercase, digits, {specials}")
             return
 
-        # create user account
+        # create a user account
         try:
             Database().create_user(email, password)
             self.msg_label.configure(text="SUCCESS !\nGo back to log in")
@@ -173,4 +174,3 @@ class LoginApp(ctk.CTk):
     def go_back(self):
         """Show login frame"""
         self.login_frame()
-
