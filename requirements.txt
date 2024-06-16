@@ -1,6 +1,5 @@
-cryptography
 customtkinter
 Pillow
 CTkTable
-password_strength
+password-strength
 packaging
